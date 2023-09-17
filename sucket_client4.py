@@ -11,16 +11,22 @@ HOST = socket.gethostbyname(hostname)
 PORT = 9999
 flag = "_ms_"
 patern = re.compile(r'((\d{3}|\d{2}|\d{1})\.){3}(\d{3}|\d{2}|\d{1})')
+YES = ['y', 'yes', 'yeah']
+NO = ['n', 'no', 'nah']
+print("""  
+    NOTE: By defualt this client connects to the local network if you intend to connect
+    to a external network pls run the script again while specifying the ip of the sever,
+    also make sure you are connected to the internet """)
 if len(sys.argv) == 2:
     if sys.argv[1]  == "-f":
         while True:
             Y_N = input("Do you want to send a file: ")
-            if Y_N.lower() == "yes":
-                flag = "_f_"
+            if Y_N.lower() in YES:
+                flag = "_f__"
                 break
-            if Y_N.lower() == "no":
+            if Y_N.lower() in NO:
                 aa = input("Then do you want to chat ?: ")
-                if aa.lower() == "yes":
+                if aa.lower() in YES:
                     flag = "_ms_"
                     break
                 else:
@@ -43,12 +49,12 @@ elif len(sys.argv) == 3:
         HOST = sys.argv[2]
         while True:
             Y_N = input("Do you want to send a file: ")
-            if Y_N.lower() == "yes":
+            if Y_N.lower() in YES:
                 flag = "_f_"
                 break
-            if Y_N.lower() == "no":
+            if Y_N.lower() in NO:
                 aa = input("Then do you want to chat ?: ")
-                if aa.lower() == "yes":
+                if aa.lower() in YES:
                     flag = "_ms_"
                     break
                 else:
@@ -101,6 +107,10 @@ if flag == "_f__":
                 time.sleep(6)
                 s.sendall(os.path.basename(file).encode('utf-8'))
                 s.recv(1)
+                ans = s.recv(1)
+                if ans.decode('utf-8') == 'n':
+                    print("(+) File transfer has been treminated")
+                    sys.exit()
                 data = nfile.read(1024)
                 while data:
                     s.sendall(data)
