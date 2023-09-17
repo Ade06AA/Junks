@@ -3,14 +3,14 @@ import time
 import socket
 import sys
 import os
-import re
-
+import mysocket
 
 hostname = socket.gethostname()
 HOST = socket.gethostbyname(hostname)
 PORT = 9999
+adr = HOST, PORT
 flag = "_ms_"
-patern = re.compile(r'((\d{3}|\d{2}|\d{1})\.){3}(\d{3}|\d{2}|\d{1})')
+
 if len(sys.argv) == 2:
     if sys.argv[1]  == "-f":
         while True:
@@ -25,45 +25,6 @@ if len(sys.argv) == 2:
                     break
                 else:
                     sys.exit()
-    elif patern.fullmatch(sys.argv[1]):
-        print("(+) setting host")
-        HOST = sys.argv[1]
-        print(HOST)
-    else:
-        print("(+) ussage:")
-        print("""
-        python3 sucket_client4.py <flag>
-        python3 sucket_client4.py <flag> <server ip>
-        python3 sucket_client4.py <server ip>
-        where flag == -f
-        """)
-
-elif len(sys.argv) == 3:
-    if sys.argv[1]  == "-f" and patern.fullmatch(sys.argv[2]):
-        HOST = sys.argv[2]
-        while True:
-            Y_N = input("Do you want to send a file: ")
-            if Y_N.lower() == "yes":
-                flag = "_f_"
-                break
-            if Y_N.lower() == "no":
-                aa = input("Then do you want to chat ?: ")
-                if aa.lower() == "yes":
-                    flag = "_ms_"
-                    break
-                else:
-                    sys.exit()
-    else:
-        print("(+) ussage:")
-        print("""
-        python3 sucket_client4.py <flag>
-        python3 sucket_client4.py <flag> <server ip>
-        python3 sucket_client4.py <server ip>
-        where flag == -f
-        """)
-
-adr = HOST, PORT
-
 if flag == "_f__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect(adr)

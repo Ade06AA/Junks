@@ -2,7 +2,13 @@
 
 import socket
 import time
+import mysocket
 
+"""
+   ---- UPDATE ------
+* imported a costomised mode to make the sending and reciveing more solid
+
+"""
 # HOST = socket.gethostbyname(socket.gethostname())
 HOST = ''
 PORT = 9999
