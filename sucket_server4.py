@@ -2,15 +2,13 @@
 import sys, os
 import socket
 import time
-import requests
 
-# HOST = socket.gethostbyname(socket.gethostname())
 HOST = ''
 PORT = 9999
 adr = HOST, PORT
 mode = '_ms_'
-hostname = socket.gethostname()
-host = socket.gethostbyname(hostname)
+hostname = socket.gethostname()     # get the name of the user
+host = socket.gethostbyname(hostname)   # get the local ip addrerss of the user
 YES = ['y', 'yes', 'yeah']
 NO = ['n', 'no']
 def GetPIp():
@@ -19,6 +17,15 @@ def GetPIp():
     else returns the the local ip
     """
     try:
+        try:
+            requests = __import__('requests')
+        except:
+            print(' (+)  you dont have python requests library')
+            print(""" (+)  you can try geting your this systems ip manually
+                  by using ipconfig or google: type "my ip" on google
+                  then any one can connect to this server using that
+                  ip is you are connected to the internet""")
+            raise
         responce = request.get("https://httpsbin.org/ip")
         data = responce.json()
         ip = data.get['origin']
@@ -50,7 +57,20 @@ while True:
         print(mode)
         if mode == '_f__':
             print('(+) Initiating file transfer........')
-            msg = server.recv(70)
+            nm = server.recv(5)
+            nm = int(nm.decode('utf-8'))
+            msg = server.recv(nm)
+            """
+            msg = b''
+            while True:
+                print(1)
+                nf = s.recv(1024)
+                if not nf:
+                    break
+                msg += nf
+                if b'\n' in nf:
+                    break
+            """
             msg = msg.decode('utf-8')
             ans = input(f"{msg}:")
             ans += '\n'
@@ -71,7 +91,9 @@ while True:
                 file = os.path.abspath(fname)
                 if os.path.isfile(file):
                     print('This file is alredy present in this folder do you want to replace it?', end=' ')
-                out = input()
+                    out = input()
+                else:
+                    out = 'y'
                 if out not in YES:
                     print(" (+) Terminating file transfer.....")
                     server.sendall(b'n')

@@ -37,6 +37,7 @@ if CO.flag == "_f__":
             
             #1 lmsg = len(msg)
             s.sendall(b'_f__')
+            CO.SendUseName(s)
             #1  lmsg = "{:0>5}".format(lmsg)
             #1  s.sendall(lmsg.encode('utf-8'))
             #1  s.sendall(msg.encode('utf-8'))
@@ -85,12 +86,14 @@ if CO.flag == "_f__":
 if CO.flag == "_ms_":
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            print(f'Trying to connect to {CO.HOST}')
+            # *** print(f'Trying to connect to {CO.HOST}')
             s.connect(adr)
             nn = ''
             s.sendall(b'_ms_')
+            CO.SendUseName(s)
+            CO.RecvOldMsg(s)
             while nn.strip() == '':
-                nn = input('..')
+                nn = input('\n\n:D {{(ME) - ({}) }}\n ........: '.format(CO.hostname))
             dnn = nn.encode('utf-8')
             s.sendall(dnn)
         if nn == "exit" or nn == "exitall":

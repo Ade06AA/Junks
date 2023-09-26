@@ -4,11 +4,13 @@ import socket
 import sys
 import os
 import re
+import threading
 from mymodle import ClientObject
 
 CO = ClientObject()
 
-
+switch = False
+message = ""
 # pertern matching in order to identify an ip
 YES = ['y', 'yes', 'yeah']
 NO = ['n', 'no', 'nah']
@@ -19,6 +21,17 @@ print("""
 CO.arg_check()
 
 adr = CO.HOST, CO.PORT
+#**************************************************************************************
+def thread_input():
+    """
+    this is a tread that recive input as the connction is ongoing
+    """
+    global switch, message
+    while message not in ['exit', 'exitall']:
+        val = input('my message: ')
+        message = val
+        switch = True
+thread1 = threading.Thread(target=thread_input)
 
 if CO.flag == "_f__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -37,6 +50,7 @@ if CO.flag == "_f__":
             
             #1 lmsg = len(msg)
             s.sendall(b'_f__')
+            CO.SendUseName(s)
             #1  lmsg = "{:0>5}".format(lmsg)
             #1  s.sendall(lmsg.encode('utf-8'))
             #1  s.sendall(msg.encode('utf-8'))
@@ -83,16 +97,27 @@ if CO.flag == "_f__":
 
 # HOST = socket.gethostbyname(socket.gethostname())
 if CO.flag == "_ms_":
+    thread1.start()
+    #global switch, message
     while True:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            print(f'Trying to connect to {CO.HOST}')
+            # *** print(f'Trying to connect to {CO.HOST}')
             s.connect(adr)
             nn = ''
             s.sendall(b'_ms_')
-            while nn.strip() == '':
-                nn = input('..')
-            dnn = nn.encode('utf-8')
-            s.sendall(dnn)
+            CO.SendUseName(s)
+            CO.RecvOldMsg(s)
+            #+while nn.strip() == '':
+             # +nn = input('\n\n:D {{(ME) - ({}) }}\n ........: '.format(CO.hostname))
+            if switch == True:
+                nn = message
+                dnn = nn.encode('utf-8')
+                s.sendall(b't')
+                s.sendall(dnn)
+                switch = False
+            else:
+                dnn = b''
+                s.sendall(b'f')
         if nn == "exit" or nn == "exitall":
             break
 #print(f"Recive {data.decode('utf-8')}")
