@@ -96,4 +96,5 @@ int main(void)
 	searcher(ar, "e", filter);
 	printf(".............................\n");
 	print_array(filter);
+	return (0);
 }
